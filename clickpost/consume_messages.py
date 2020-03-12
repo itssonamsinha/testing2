@@ -6,5 +6,5 @@
     method: 'post',
                 url: CONFIG.SOCIAL_MESSAGING_SERVICE_URL + '/api/v1/receiver/push-message',
                 data: data,
-                headers: { 'Content-Type': 'application/json'
+                headers: { 'Content-Type': 'application/json'}
 '''

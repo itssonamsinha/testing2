@@ -1,7 +1,6 @@
+import abc
 import datetime
 import json
-
-from django.contrib.sites import requests
 from django.db import models
 from clickpost.rabbitmq_client import publish_message
 
@@ -24,24 +23,25 @@ class NotificationAction:
 
 
 class Notification(abc.ABC):
-   @abc.abstractmethod
-   def send(self):
-      pass
+    def __init__(self):
+        super(Notification, self).__init__()
+
+    @abc.abstractmethod
+    def send(self, user, shipment_id, status, *args, **kwargs):
+        pass
 
 
-class SmsNotification(NotificationAction):
+class SmsNotification(Notification):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
     shipment_id = models.BigIntegerField()
     sent_at = models.DateTimeField(blank=True, null=True, default=None)
-    status = models.TextField()
+    status = models.CharField(max_length=100, blank=False, null=False)
 
     class Meta:
         db_table = "sms_notification"
 
-    def send(self, user, shipment_id, status):
-        sms_noti = SmsNotification.objects.create(user=user,
-                                                           shipment_id=shipment_id,
-                                                      status=status, sent_at=datetime.datetime.now())
+    def send(self, user, shipment_id, status, *args, **kwargs):
+        sms_noti = SmsNotification.objects.create(user=user, shipment_id=shipment_id, status=status, sent_at=datetime.datetime.now())
         sms_text = None
         #  create sms text to be send
         message = {
@@ -52,22 +52,21 @@ class SmsNotification(NotificationAction):
         publish_message(json.dumps(message))
 
 
-class WhtsappNotification(NotificationAction):
+class WhtsappNotification(Notification):
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
     shipment_id = models.BigIntegerField()
     sent_at = models.DateTimeField(blank=True, null=True, default=None)
-    status = models.TextField()
+    status = models.CharField(max_length=100, blank=False, null=False)
     template_name = models.CharField(max_length=100, null=False, blank=False)
 
-    def send(self, user, shipment_id, status):
-        whatsapp_noti = WhtsappNotification.objects.create(user=user,
-                        shipment_id=shipment_id,
-                        status=status, sent_at=datetime.datetime.now())
-        message = None #the message to be sent
+    def send(self, user, shipment_id, status, *args, **kwargs):
+        # template_name is the name of the template approved
         template_name = None
+        whatsapp_noti = WhtsappNotification.objects.create(user=user, shipment_id=shipment_id, status=status,
+                                                           sent_at=datetime.datetime.now(), template_name=template_name)
+        message = None #the message to be sent
         # create message over here
-        # template_name is the name of the template
         whatsapp_message = {"media": {},
                             "message": "",
                             "template": {
@@ -82,7 +81,6 @@ class WhtsappNotification(NotificationAction):
             "type": "whatsapp"
         }
         publish_message(json.dumps(whatsapp_payload))
-
 
     class Meta:
         db_table = "whtsapp_notification"

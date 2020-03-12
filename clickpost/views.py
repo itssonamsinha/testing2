@@ -8,12 +8,12 @@ User = get_user_model()
 class NotificationView(viewsets.GenericViewSet):
 
     def retrieve_sms(self):
-        # business logic
+        # business logic  and response will be added in the dictionary
         response = dict()
         return Response(response)
 
     def retrieve_whatsapp(self):
-        #business logic
+        #business logic and response will be added in the dictionary
         response = dict()
         return Response(response)
 
