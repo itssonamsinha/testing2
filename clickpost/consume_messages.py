@@ -2,9 +2,9 @@
  1. sms
         hit the sms api: https://api.rmlconnect.net/bulksms/bulksms?username=X&password=Y&type=Y&dlr=Z&destination=Q&source=R&message=S
 2. whatsapp
-    hit the whatsapp url https://whtsappqa.clickpost.com/api/v1/receiver/push-message
+    hit the whatsapp url https://whtsappqa.clickpost.com
     method: 'post',
-                url: CONFIG.SOCIAL_MESSAGING_SERVICE_URL + '/api/v1/receiver/push-message',
+                url: https://whtsappqa.clickpost.com
                 data: data,
                 headers: { 'Content-Type': 'application/json'}
 '''
