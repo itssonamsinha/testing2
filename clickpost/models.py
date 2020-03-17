@@ -5,10 +5,11 @@ from django.db import models
 from clickpost.rabbitmq_client import publish_message
 
 
-class User():
+class User(models.Model):
     phone_number = models.CharField(max_length=10, blank=False, null=True, default=None)
     email = models.EmailField(max_length=100, blank=False, null=True, default=None)
     is_phone_number_verified = models.BooleanField(verbose_name='Phone Number Verified', default=False)
+    is_verified = models.BooleanField(verbose_name='Verified', default=False)
 
     class Meta:
         db_table = "user"
@@ -22,16 +23,7 @@ class NotificationAction:
         (WHATSAPP_Notification, "whatsapp_notification"),)
 
 
-class Notification(abc.ABC):
-    def __init__(self):
-        super(Notification, self).__init__()
-
-    @abc.abstractmethod
-    def send(self, user, shipment_id, status, *args, **kwargs):
-        pass
-
-
-class SmsNotification(Notification):
+class SmsNotification(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
     shipment_id = models.BigIntegerField()
     sent_at = models.DateTimeField(blank=True, null=True, default=None)
@@ -52,7 +44,7 @@ class SmsNotification(Notification):
         publish_message(json.dumps(message))
 
 
-class WhtsappNotification(Notification):
+class WhtsappNotification(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
     shipment_id = models.BigIntegerField()
@@ -86,7 +78,7 @@ class WhtsappNotification(Notification):
         db_table = "whtsapp_notification"
 
 
-class StatusNotificationTypeRecords():
+class StatusNotificationTypeRecords(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
     status = models.TextField()
     notification_type = models.PositiveIntegerField(choices=NotificationAction.NOTIFICATION_TYPE_CHOICES)

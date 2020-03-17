@@ -4,5 +4,5 @@ from .views import NotificationView
 urlpatterns = [
     path('sendSms', NotificationView.as_view({'get': 'retrieve_sms'}), name='send-sms'),
     path('sendWhatsApp', NotificationView.as_view({'get': 'retrieve_whatsapp'}), name='send-sms'),
-
+    path('sendProductNotification', NotificationView.as_view({'get': 'send_notification'}), name='send-notification'),
 ]
