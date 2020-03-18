@@ -1,0 +1,33 @@
+router file contains the urls.
+
+1. http://0.0.0.0:8001/clickpost/sendSms
+        Parameters: "message"="Hello Message"
+                    "phone":"8237498749"
+                     "apiKEY": "12346789"
+
+2. http://0.0.0.0:8001/clickpost/sendWhatsApp
+        Parameters: "message"="Hello Message"
+                    "phone":"8237498749"
+                     "apiKEY": "12346789"
+
+3. http://0.0.0.0:8001/clickpost/sendProductNotification?user_id=1&shipment_id=1&status=1&notification_type=1
+        Parameters: user_id = 1
+                    status = 1
+                    shipment_id = 1
+                    notification_type = 1
+
+         Case1 : If the user is not authorized, I have raised the error.
+         Case 2: If any parameters are missing then also I have raised the error.
+
+         I have created the object of StatusNotificationTypeRecords model and returned success
+
+4. I have run the cron job using celery by creating a task for all the objects whose messages have not been sent till yet.
+
+5. I have called the respective method of the notification from the task and called the corresponding notification API.
+    Whole task, I have placed in  try catch block to keep track of error logs if any occurs.
+
+6. A track can be kept to know whether the person has blocked the receiving of messages via whatsapp or not and accordingly     the message the can be sent.
+
+
+
+4.

@@ -32,7 +32,3 @@ class NotificationView(viewsets.GenericViewSet):
 
         StatusNotificationTypeRecords.objects.create(user_id=user_id, status=status, notification_type=notification_type)
         return HttpResponse("success")
-
-
-
-

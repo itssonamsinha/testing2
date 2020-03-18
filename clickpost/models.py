@@ -1,11 +1,14 @@
 import abc
 import datetime
 import json
+
+from django.contrib import admin
 from django.db import models
 from clickpost.rabbitmq_client import publish_message
 
 
 class User(models.Model):
+    name = models.CharField(max_length=500, blank=False, null=False)
     phone_number = models.CharField(max_length=10, blank=False, null=True, default=None)
     email = models.EmailField(max_length=100, blank=False, null=True, default=None)
     is_phone_number_verified = models.BooleanField(verbose_name='Phone Number Verified', default=False)
@@ -86,3 +89,5 @@ class StatusNotificationTypeRecords(models.Model):
 
     class Meta:
         db_table = "status_notification_type_records"
+
+admin.site.register(User)
